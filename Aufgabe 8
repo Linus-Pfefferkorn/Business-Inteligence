@@ -1,20 +1,71 @@
---Meilenstein 8
---8.1
-SELECT
-{[Measures].[Umsatzbetrag],
-[Measures].[Umsatzmenge]}
-ON COLUMNS,
-{([Geografie].[Bundesland].[Sachsen]),
-([Geografie].[Bundesland].[Thüringen])}
-ON ROWS
-FROM [Umsatz]
---8.2
-SELECT
-{[Measures].[Umsatzbetrag],
-[Measures].[Umsatzmenge]}
-ON COLUMNS,
-{([Geografie].[Bundesland].[Sachsen]),
-([Geografie].[Bundesland].[Thüringen])}
-ON ROWS
-FROM [Umsatz]
-Where [Zeit].[Jahr].[2022]
+SELECT  
+    { [Geografie].[Bundesland].[Sachsen], [Geografie].[Bundesland].[Thüringen] } 
+ON COLUMNS,  
+    { [Measures].[Umsatzbetrag], [Measures].[Umsatzmenge] } 
+ON ROWS  
+FROM [Umsatz];
+
+--Aufgabe 8.2
+SELECT  
+    { [Geografie].[Bundesland].[Sachsen], [Geografie].[Bundesland].[Thüringen] } 
+ON COLUMNS,  
+    { [Measures].[Umsatzbetrag], [Measures].[Umsatzmenge] } 
+ON ROWS  
+FROM [Umsatz] 
+WHERE [Zeit].[Jahr].&[2022];
+
+--Aufgabe 8.3
+SELECT  
+    { [Geografie].[Bundesland].[Sachsen], [Geografie].[Bundesland].[Thüringen] } 
+ON COLUMNS,  
+CROSSJOIN ( {[Zeit].[Kalender].[Jahr].[2022]} , {[Produkt].[Sortiment].[Kategorie]} ) 
+ON ROWS  
+FROM [Umsatz] 
+WHERE ([Measures].[Umsatzbetrag]);
+
+--8.4
+
+select 
+	{[Geografie].[Bundesland].&[01], [Geografie].[Bundesland].&[15]}
+on COLUMNS,
+{[Produkt].[Sortiment].[Subkategorie]}
+on ROWS
+from [Umsatz]
+Where ([Measures].[Umsatzbetrag], [Zeit].[Jahr].&[2022],[Produkt].[Kategorie].&[01]);
+
+--8.5
+
+select
+	{[Geografie].[Unternehmen].[Staat]}
+on Columns,
+{[Produkt].[Sortiment].[Kategorie]}
+on Rows
+from [Umsatz]
+Where ([Measures].[Umsatzbetrag],[Zeit].[Jahr].&[2022]);
+
+--8.6
+select
+	{[Measures].[Umsatzbetrag],[Measures].[Umsatzmenge]}
+on Columns,
+crossjoin ({[Geografie].[Unternehmen].[Staat]}, {[Produkt].[Sortiment].[Kategorie]})
+on Rows
+from [Umsatz]
+Where ([Zeit].[Jahr].&[2022]);
+
+--8.7
+select 
+{[Produkt].[Sortiment].[Kategorie]}
+on Columns,
+crossjoin	({[Zeit].[Jahr].[Jahr]},{[Zeit].[Quartal].[Quartal]}, {[Zeit].[Monat].[Monat]})
+on rows
+from [Umsatz]
+Where ([Measures].[Umsatzbetrag]);
+
+--8.8
+select 
+crossjoin ({[Produkt].[Sortiment].[Kategorie]},{[Measures].[Umsatzbetrag],[Measures].[Umsatzmenge]})
+on Columns,
+crossjoin	({[Zeit].[Quartal].[Quartal]}, {[Zeit].[Monat].[Monat]})
+on rows
+from [Umsatz]
+Where ([Zeit].[Jahr].&[2022]);
